@@ -972,6 +972,121 @@ function renderProgress() {
 // Application initialisation
 // -----------------------------------------
 
+
+/* =========================================
+   SETTINGS: Profile, Theme and Reminders
+   ========================================= */
+
+const PROFILE_KEY = "studentHub_profile";
+const THEME_KEY = "studentHub_theme";
+const NOTIFICATIONS_KEY = "studentHub_notifications";
+
+const profileForm = $("#profileForm");
+const themeSelect = $("#themeSelect");
+const saveNotificationsButton = $("#saveNotifications");
+
+function applyTheme(theme) {
+  const selectedTheme = theme === "dark" ? "dark" : "light";
+
+  document.body.classList.toggle(
+    "dark-mode",
+    selectedTheme === "dark"
+  );
+
+  if (themeSelect) {
+    themeSelect.value = selectedTheme;
+  }
+
+  saveData(THEME_KEY, selectedTheme);
+}
+
+function loadSettings() {
+  const profile = loadData(PROFILE_KEY, {});
+  const notifications = loadData(NOTIFICATIONS_KEY, {
+    assignments: true,
+    studySessions: true,
+    progress: false
+  });
+
+  $("#studentName").value = profile.name || "";
+  $("#studentCourse").value = profile.course || "";
+  $("#studentYear").value = profile.year || "";
+
+  $("#assignmentNotifications").checked =
+    notifications.assignments !== false;
+
+  $("#studyNotifications").checked =
+    notifications.studySessions !== false;
+
+  $("#progressNotifications").checked =
+    notifications.progress === true;
+
+  const profileName = $(".profile strong");
+  const profileDescription = $(".profile p");
+
+  if (profileName) {
+    profileName.textContent = profile.name || "My Student Space";
+  }
+
+  if (profileDescription) {
+    profileDescription.textContent =
+      profile.course || "Future in progress";
+  }
+
+  const savedTheme = loadData(THEME_KEY, "light");
+  applyTheme(savedTheme);
+}
+
+if (profileForm) {
+  profileForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const profile = {
+      name: $("#studentName").value.trim(),
+      course: $("#studentCourse").value.trim(),
+      year: $("#studentYear").value
+    };
+
+    if (!saveData(PROFILE_KEY, profile)) return;
+
+    const profileName = $(".profile strong");
+    const profileDescription = $(".profile p");
+
+    if (profileName) {
+      profileName.textContent = profile.name || "My Student Space";
+    }
+
+    if (profileDescription) {
+      profileDescription.textContent =
+        profile.course || "Future in progress";
+    }
+
+    $("#profileMessage").textContent = "Profile saved successfully! 💜";
+  });
+}
+
+if (themeSelect) {
+  themeSelect.addEventListener("change", () => {
+    applyTheme(themeSelect.value);
+  });
+}
+
+if (saveNotificationsButton) {
+  saveNotificationsButton.addEventListener("click", () => {
+    const preferences = {
+      assignments: $("#assignmentNotifications").checked,
+      studySessions: $("#studyNotifications").checked,
+      progress: $("#progressNotifications").checked
+    };
+
+    if (!saveData(NOTIFICATIONS_KEY, preferences)) return;
+
+    $("#notificationMessage").textContent =
+      "Reminder preferences saved! 💜";
+  });
+}
+
+
 function initialiseStudentHub() {
   const yearElement = $("#currentYear");
 
