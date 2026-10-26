@@ -1,1 +1,476 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#8b5cf6">
+  <meta name="description" content="Student Hub - Your personal space for assignments, study planning, notes and academic progress.">
+
+  <title>Student Hub | Your Student Life, Organised</title>
+
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-icon">S</div>
+        <div>
+          <h2>Student Hub</h2>
+          <p>Your space to succeed</p>
+        </div>
+      </div>
+
+      <nav class="navigation" aria-label="Main navigation">
+        <button class="nav-link active" data-section="dashboard">
+          <span>🏠</span> Dashboard
+        </button>
+        <button class="nav-link" data-section="assignments">
+          <span>📝</span> Assignments
+        </button>
+        <button class="nav-link" data-section="planner">
+          <span>📅</span> Study Planner
+        </button>
+        <button class="nav-link" data-section="notes">
+          <span>📚</span> My Notes
+        </button>
+        <button class="nav-link" data-section="progress">
+          <span>📊</span> My Progress
+        </button>
+        <button class="nav-link" data-section="groups">
+          <span>👥</span> Study Groups
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <p>Small steps. Big dreams.</p>
+        <span>💜 Keep going!</span>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+      <header class="topbar">
+        <button
+          type="button"
+          class="menu-toggle"
+          id="menuToggle"
+          aria-label="Toggle navigation"
+          aria-controls="sidebar"
+          aria-expanded="false"
+        >☰</button>
+
+        <div class="welcome">
+          <p class="eyebrow">YOUR ACADEMIC SPACE</p>
+          <h1 id="pageTitle">Dashboard</h1>
+        </div>
+
+        <div class="profile">
+          <div class="avatar">🎓</div>
+          <div>
+            <strong>My Student Space</strong>
+            <p>Future in progress</p>
+          </div>
+        </div>
+      </header>
+
+      <!-- Dashboard -->
+      <section class="page-section active" id="dashboard">
+        <div class="hero">
+          <div>
+            <p class="eyebrow">WELCOME TO YOUR HUB</p>
+            <h2>Your goals are closer than you think.</h2>
+            <p>
+              Organise your studies, manage your deadlines and
+              celebrate every little win.
+            </p>
+            <button type="button" class="primary-button" data-go="assignments">
+              View my assignments →
+            </button>
+          </div>
+          <div class="hero-illustration" aria-hidden="true">📖✨</div>
+        </div>
+
+        <div class="section-heading">
+          <div>
+            <h2>Your overview</h2>
+            <p>Here's how your academic journey is going.</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-icon lavender">📝</div>
+            <p>Total Assignments</p>
+            <h3 id="totalAssignments">0</h3>
+            <span>Keep track of every task</span>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon pink">⏳</div>
+            <p>Pending Tasks</p>
+            <h3 id="pendingAssignments">0</h3>
+            <span>One step at a time</span>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon green">✅</div>
+            <p>Completed Tasks</p>
+            <h3 id="completedAssignments">0</h3>
+            <span>Celebrate your progress</span>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon blue">📚</div>
+            <p>Study Sessions</p>
+            <h3 id="totalSessions">0</h3>
+            <span>Invest in your future</span>
+          </article>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Upcoming assignments</h2>
+                <p>Stay ahead of your deadlines.</p>
+              </div>
+              <button type="button" class="text-button" data-go="assignments">
+                View all
+              </button>
+            </div>
+            <div id="upcomingList" class="item-list">
+              <p class="empty-state">Your upcoming assignments will appear here.</p>
+            </div>
+          </article>
+
+          <article class="panel focus-panel">
+            <div class="panel-heading">
+              <div>
+                <h2>Today's focus</h2>
+                <p>What matters most today?</p>
+              </div>
+              <span>🎯</span>
+            </div>
+
+            <form id="focusForm">
+              <label for="dailyFocus">My main goal</label>
+              <textarea
+                id="dailyFocus"
+                rows="4"
+                placeholder="e.g. Finish my database assignment..."
+              ></textarea>
+              <button type="submit" class="primary-button">
+                Save my focus
+              </button>
+            </form>
+            <p id="focusMessage" class="form-message" aria-live="polite"></p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Assignments -->
+      <section class="page-section" id="assignments" hidden>
+        <div class="section-heading">
+          <div>
+            <h2>Assignment Tracker</h2>
+            <p>Keep all your academic tasks in one place.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Add a new assignment</h3>
+
+          <form id="assignmentForm" class="form-grid">
+            <div class="form-group full-width">
+              <label for="assignmentTitle">Assignment title</label>
+              <input
+                type="text"
+                id="assignmentTitle"
+                placeholder="e.g. Database Management Assignment"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="assignmentSubject">Subject / Module</label>
+              <input
+                type="text"
+                id="assignmentSubject"
+                placeholder="e.g. Information Technology"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="assignmentDueDate">Due date</label>
+              <input type="date" id="assignmentDueDate" required>
+            </div>
+
+            <div class="form-group">
+              <label for="assignmentPriority">Priority</label>
+              <select id="assignmentPriority">
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <button type="submit" class="primary-button">
+                + Add Assignment
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="toolbar">
+            <input
+              type="search"
+              id="assignmentSearch"
+              placeholder="Search assignments..."
+              aria-label="Search assignments"
+            >
+
+            <select id="assignmentFilter" aria-label="Filter assignments">
+              <option value="all">All assignments</option>
+              <option value="pending">Pending</option>
+              <option value="completed">Completed</option>
+              <option value="high">High priority</option>
+            </select>
+          </div>
+
+          <div id="assignmentList" class="item-list">
+            <p class="empty-state">No assignments yet. Add your first one above!</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Study Planner -->
+      <section class="page-section" id="planner" hidden>
+        <div class="section-heading">
+          <div>
+            <h2>Study Planner</h2>
+            <p>Build a routine that works for you.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Plan a study session</h3>
+
+          <form id="sessionForm" class="form-grid">
+            <div class="form-group full-width">
+              <label for="sessionTitle">What will you study?</label>
+              <input
+                type="text"
+                id="sessionTitle"
+                placeholder="e.g. Revise Chapter 3"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="sessionDate">Study date</label>
+              <input type="date" id="sessionDate" required>
+            </div>
+
+            <div class="form-group">
+              <label for="sessionTime">Start time</label>
+              <input type="time" id="sessionTime" required>
+            </div>
+
+            <div class="form-group">
+              <label for="sessionDuration">Duration</label>
+              <select id="sessionDuration">
+                <option value="25">25 minutes</option>
+                <option value="45">45 minutes</option>
+                <option value="60" selected>1 hour</option>
+                <option value="90">1.5 hours</option>
+                <option value="120">2 hours</option>
+              </select>
+            </div>
+
+            <div class="form-group full-width">
+              <button type="submit" class="primary-button">
+                + Add Study Session
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading">
+            <div>
+              <h3>My study sessions</h3>
+              <p>Your personal study schedule.</p>
+            </div>
+          </div>
+          <div id="sessionList" class="item-list">
+            <p class="empty-state">Your planned sessions will appear here.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Notes -->
+      <section class="page-section" id="notes" hidden>
+        <div class="section-heading">
+          <div>
+            <h2>My Notes</h2>
+            <p>Capture ideas, summaries and reminders.</p>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>Create a note</h3>
+
+          <form id="noteForm">
+            <div class="form-group">
+              <label for="noteTitle">Note title</label>
+              <input
+                type="text"
+                id="noteTitle"
+                placeholder="e.g. Important exam topics"
+                required
+              >
+            </div>
+
+            <div class="form-group">
+              <label for="noteContent">Your notes</label>
+              <textarea
+                id="noteContent"
+                rows="6"
+                placeholder="Write your notes here..."
+                required
+              ></textarea>
+            </div>
+
+            <button type="submit" class="primary-button">Save note</button>
+          </form>
+        </div>
+
+        <div class="panel">
+          <h3>Saved notes</h3>
+          <div id="notesList" class="notes-grid">
+            <p class="empty-state">Your saved notes will appear here.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Progress -->
+      <section class="page-section" id="progress" hidden>
+        <div class="section-heading">
+          <div>
+            <h2>My Progress</h2>
+            <p>Every completed task is a step forward.</p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-icon green">🏆</div>
+            <p>Tasks completed</p>
+            <h3 id="progressCompleted">0</h3>
+            <span>Look how far you've come</span>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon lavender">📈</div>
+            <p>Completion rate</p>
+            <h3 id="completionRate">0%</h3>
+            <span>Progress, not perfection</span>
+          </article>
+
+          <article class="stat-card">
+            <div class="stat-icon blue">⏰</div>
+            <p>Planned study time</p>
+            <h3 id="studyMinutes">0 min</h3>
+            <span>Time invested in learning</span>
+          </article>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading">
+            <div>
+              <h3>Weekly study goal</h3>
+              <p>Choose a target and work towards it.</p>
+            </div>
+            <span>🌟</span>
+          </div>
+
+          <form id="goalForm" class="form-grid">
+            <div class="form-group">
+              <label for="weeklyGoal">Goal (hours per week)</label>
+              <input
+                type="number"
+                id="weeklyGoal"
+                min="1"
+                max="168"
+                value="10"
+                required
+              >
+            </div>
+            <div class="form-group">
+              <label>&nbsp;</label>
+              <button type="submit" class="primary-button">Save goal</button>
+            </div>
+          </form>
+
+          <div class="progress-track" role="progressbar"
+               aria-label="Weekly study goal progress"
+               aria-valuemin="0" aria-valuemax="100"
+               aria-valuenow="0" id="goalProgressBar">
+            <div class="progress-fill" id="goalProgressFill"></div>
+          </div>
+          <p id="goalProgressText">Set a goal and start studying!</p>
+        </div>
+      </section>
+
+      <!-- Study Groups -->
+      <section class="page-section" id="groups" hidden>
+        <div class="section-heading">
+          <div>
+            <h2>Study Groups</h2>
+            <p>Learning is better when we grow together.</p>
+          </div>
+        </div>
+
+        <div class="panel coming-soon">
+          <div class="coming-soon-icon">👥💜</div>
+          <h2>Study Groups are coming soon!</h2>
+          <p>
+            We're planning a space where students can connect,
+            share learning resources, discuss assignments and
+            motivate each other.
+          </p>
+          <p>
+            For now, you can use your assignments, planner and notes
+            to stay organised.
+          </p>
+          <button type="button" class="primary-button" data-go="dashboard">
+            Back to dashboard
+          </button>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>Made for students, with 💜</p>
+        <p>Student Hub © <span id="currentYear"></span></p>
+      </footer>
+
+    </main>
+  </div>
+
+  <noscript>
+    <p>Please enable JavaScript to use Student Hub's interactive features.</p>
+  </noscript>
+
+  <script src="js/script.js" defer></script>
+</body>
+</html>
+
