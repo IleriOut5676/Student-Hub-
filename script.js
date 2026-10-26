@@ -1086,6 +1086,62 @@ if (saveNotificationsButton) {
   });
 }
 
+/* =========================================
+   BROWSER NOTIFICATIONS
+   ========================================= */
+
+const enableNotificationsButton = $("#enableNotifications");
+const testNotificationButton = $("#testNotification");
+
+if (enableNotificationsButton) {
+  enableNotificationsButton.addEventListener("click", async () => {
+    if (!("Notification" in window)) {
+      alert("Your browser does not support notifications.");
+      return;
+    }
+
+    try {
+      const permission = await Notification.requestPermission();
+
+      if (permission === "granted") {
+        alert("Notifications enabled successfully! 💜");
+      } else if (permission === "denied") {
+        alert(
+          "Notifications are blocked. Please allow them in your browser settings."
+        );
+      } else {
+        alert("Notification permission was not granted yet.");
+      }
+    } catch (error) {
+      console.error("Could not enable notifications:", error);
+      alert("We couldn't enable notifications. Please try again.");
+    }
+  });
+}
+
+if (testNotificationButton) {
+  testNotificationButton.addEventListener("click", () => {
+    if (!("Notification" in window)) {
+      alert("Your browser does not support notifications.");
+      return;
+    }
+
+    if (Notification.permission !== "granted") {
+      alert("Please click Enable Browser Notifications first. 💜");
+      return;
+    }
+
+    try {
+      new Notification("Student Hub 🔔", {
+        body: "It's working! Your study journey is getting smarter. 💜"
+      });
+    } catch (error) {
+      console.error("Could not send test notification:", error);
+      alert("The test notification could not be displayed.");
+    }
+  });
+}
+
 
 
 function initialiseStudentHub() {
