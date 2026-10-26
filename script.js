@@ -968,6 +968,153 @@ function renderProgress() {
   }
 }
 
+
+/* =========================================
+   SCHEDULED ASSIGNMENT AND STUDY REMINDERS
+   ========================================= */
+
+const SENT_REMINDERS_KEY = "studentHub_sentReminders";
+
+let reminderTimer = null;
+
+function getLocalDateString(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+}
+
+function sendScheduledNotification(title, body, tag) {
+  if (!("Notification" in window)) return false;
+  if (Notification.permission !== "granted") return false;
+
+  try {
+    new Notification(title, {
+      body,
+      tag
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Reminder notification failed:", error);
+    return false;
+  }
+}
+
+function checkScheduledReminders() {
+  if (
+    !("Notification" in window) ||
+    Notification.permission !== "granted"
+  ) {
+    return;
+  }
+
+  const preferences = loadData("studentHub_notifications", {
+    assignments: true,
+    studySessions: true,
+    progress: false
+  });
+
+  const sentReminders = loadData(SENT_REMINDERS_KEY, {});
+  const now = new Date();
+  const today = getLocalDateString(now);
+  let changed = false;
+
+  // Assignment reminders: 9 AM the day before and on the due date.
+  if (preferences.assignments !== false) {
+    assignments.forEach((assignment) => {
+      if (assignment.completed || !assignment.dueDate) return;
+
+      [1, 0].forEach((daysBefore) => {
+        const reminderDate = new Date(
+          `${assignment.dueDate}T00:00:00`
+        );
+
+        if (Number.isNaN(reminderDate.getTime())) return;
+
+        reminderDate.setDate(
+          reminderDate.getDate() - daysBefore
+        );
+
+        const reminderDay = getLocalDateString(reminderDate);
+        const reminderKey =
+          `assignment:${assignment.id}:${daysBefore}`;
+
+        if (reminderDay !== today) return;
+        if (now.getHours() < 9) return;
+        if (sentReminders[reminderKey]) return;
+
+        const message = daysBefore === 1
+          ? `"${assignment.title}" is due tomorrow.`
+          : `"${assignment.title}" is due today!`;
+
+        const sent = sendScheduledNotification(
+          "Student Hub — Assignment Reminder 📚",
+          message,
+          reminderKey
+        );
+
+        if (sent) {
+          sentReminders[reminderKey] = new Date().toISOString();
+          changed = true;
+        }
+      });
+    });
+  }
+
+  // Study-session reminders: within five minutes after start time.
+  if (preferences.studySessions !== false) {
+    sessions.forEach((session) => {
+      if (!session.date || !session.time) return;
+
+      const startTime = new Date(
+        `${session.date}T${session.time}:00`
+      );
+
+      if (Number.isNaN(startTime.getTime())) return;
+
+      const elapsed = now.getTime() - startTime.getTime();
+
+      if (elapsed < 0 || elapsed > 5 * 60 * 1000) return;
+
+      const reminderKey =
+        `session:${session.id}:${session.date}:${session.time}`;
+
+      if (sentReminders[reminderKey]) return;
+
+      const sent = sendScheduledNotification(
+        "Student Hub — Study Time! ⏰",
+        `Your study session "${session.title}" is starting now.`,
+        reminderKey
+      );
+
+      if (sent) {
+        sentReminders[reminderKey] = new Date().toISOString();
+        changed = true;
+      }
+    });
+  }
+
+  if (changed) {
+    saveData(SENT_REMINDERS_KEY, sentReminders);
+  }
+}
+
+function startReminderChecks() {
+  if (reminderTimer !== null) {
+    clearInterval(reminderTimer);
+  }
+
+  // Check immediately, then every 30 seconds while the page is open.
+  checkScheduledReminders();
+
+  reminderTimer = setInterval(
+    checkScheduledReminders,
+    30 * 1000
+  );
+}
+
 // -----------------------------------------
 // Application initialisation
 // -----------------------------------------
