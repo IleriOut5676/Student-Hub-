@@ -750,6 +750,153 @@ if (notesList) {
   });
 }
 
+
+/* =========================================
+   STUDY GROUPS
+   Create, search, join and save groups
+   ========================================= */
+
+const STUDY_GROUPS_KEY = "studentHub_groups";
+let studyGroups = loadData(STUDY_GROUPS_KEY, []);
+
+if (!Array.isArray(studyGroups)) {
+  studyGroups = [];
+}
+
+const studyGroupForm = $("#studyGroupForm");
+const studyGroupSearch = $("#groupSearch");
+const studyGroupsList = $("#studyGroupsList");
+
+// Display saved groups and filter search results.
+function renderStudyGroups() {
+  if (!studyGroupsList) return;
+
+  const searchTerm = (studyGroupSearch?.value || "")
+    .trim()
+    .toLowerCase();
+
+  const filteredGroups = studyGroups.filter((group) => {
+    const name = String(group.name || "").toLowerCase();
+    const subject = String(group.subject || "").toLowerCase();
+    const description = String(group.description || "").toLowerCase();
+
+    return (
+      name.includes(searchTerm) ||
+      subject.includes(searchTerm) ||
+      description.includes(searchTerm)
+    );
+  });
+
+  if (filteredGroups.length === 0) {
+    studyGroupsList.innerHTML = `
+      <p class="empty-state">
+        ${studyGroups.length === 0
+          ? "No study groups yet. Create your first group above! 💜"
+          : "No groups match your search. Try another subject or name."}
+      </p>
+    `;
+    return;
+  }
+
+  studyGroupsList.innerHTML = filteredGroups.map((group) => `
+    <article class="list-item">
+      <h3>${escapeHTML(group.name)}</h3>
+      <p><strong>Subject:</strong> ${escapeHTML(group.subject)}</p>
+      <p><strong>Format:</strong> ${escapeHTML(group.format)}</p>
+      <p>${escapeHTML(group.description)}</p>
+      <p>
+        <strong>Members:</strong>
+        ${group.joined ? "You have joined this group" : "You haven't joined yet"}
+      </p>
+      <div class="item-actions">
+        <button
+          type="button"
+          data-group-action="toggle-membership"
+          data-id="${escapeHTML(group.id)}"
+        >${group.joined ? "Leave Group" : "Join Group"}</button>
+      </div>
+    </article>
+  `).join("");
+}
+
+// Create and save a new group.
+if (studyGroupForm) {
+  studyGroupForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+
+    const name = $("#groupName").value.trim();
+    const subject = $("#groupSubject").value.trim();
+    const format = $("#groupFormat").value;
+    const description = $("#groupDescription").value.trim();
+
+    if (!name || !subject || !description) {
+      alert("Please complete the group name, subject and description.");
+      return;
+    }
+
+    const newGroup = {
+      id: makeId(),
+      name,
+      subject,
+      format,
+      description,
+      joined: false,
+      createdAt: new Date().toISOString()
+    };
+
+    studyGroups.unshift(newGroup);
+
+    if (!saveData(STUDY_GROUPS_KEY, studyGroups)) {
+      studyGroups.shift();
+      return;
+    }
+
+    studyGroupForm.reset();
+
+    if (studyGroupSearch) {
+      studyGroupSearch.value = "";
+    }
+
+    renderStudyGroups();
+    showMessage("groupName", "Your study group was created! 💜");
+  });
+}
+
+// Search by group name, subject or description.
+if (studyGroupSearch) {
+  studyGroupSearch.addEventListener("input", renderStudyGroups);
+}
+
+// Join or leave a group.
+if (studyGroupsList) {
+  studyGroupsList.addEventListener("click", (event) => {
+    const button = event.target.closest(
+      'button[data-group-action="toggle-membership"]'
+    );
+
+    if (!button) return;
+
+    const group = studyGroups.find(
+      (item) => item.id === button.dataset.id
+    );
+
+    if (!group) return;
+
+    const previousValue = Boolean(group.joined);
+    group.joined = !previousValue;
+
+    if (!saveData(STUDY_GROUPS_KEY, studyGroups)) {
+      group.joined = previousValue;
+      return;
+    }
+
+    renderStudyGroups();
+  });
+}
+
+// Show saved groups when Student Hub loads.
+renderStudyGroups();
+
 // -----------------------------------------
 // Progress and weekly goal
 // -----------------------------------------
