@@ -431,34 +431,58 @@
         </div>
       </section>
 
-      <!-- Study Groups -->
-      <section class="page-section" id="groups" hidden>
-        <div class="section-heading">
-          <div>
-            <h2>Study Groups</h2>
-            <p>Learning is better when we grow together.</p>
-          </div>
-        </div>
+      
+<!-- Study Groups -->
+<section class="page-section" id="groups" hidden>
+  <div class="section-heading">
+    <div>
+      <h2>Study Groups</h2>
+      <p>Learning is better when we grow together. 💜</p>
+    </div>
+  </div>
 
-        <div class="panel coming-soon">
-          <div class="coming-soon-icon">👥💜</div>
-          <h2>Study Groups are coming soon!</h2>
-          <p>
-            We're planning a space where students can connect,
-            share learning resources, discuss assignments and
-            motivate each other.
-          </p>
-          <p>
-            For now, you can use your assignments, planner and notes
-            to stay organised.
-          </p>
-          <button type="button" class="primary-button" data-go="dashboard">
-            Back to dashboard
-          </button>
-        </div>
-      </section>
+  <div class="panel">
+    <h3>Create a Study Group</h3>
+    <p>Bring students together to study, share resources and prepare for exams.</p>
 
-      <footer class="footer">
+    <form id="studyGroupForm">
+      <div class="form-group">
+        <label for="groupName">Group name</label>
+        <input id="groupName" type="text" placeholder="e.g. Database Study Squad" required>
+      </div>
+
+      <div class="form-group">
+        <label for="groupSubject">Subject or module</label>
+        <input id="groupSubject" type="text" placeholder="e.g. Database Systems" required>
+      </div>
+
+      <div class="form-group">
+        <label for="groupFormat">Meeting format</label>
+        <select id="groupFormat">
+          <option value="Online">Online</option>
+          <option value="In person">In person</option>
+          <option value="Hybrid">Hybrid</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="groupDescription">Group description</label>
+        <textarea id="groupDescription" placeholder="What will your group work on?" required></textarea>
+      </div>
+
+      <button type="submit" class="primary-button">Create Group</button>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h3>Explore Study Groups</h3>
+    <input id="groupSearch" type="search" placeholder="Search by group name or subject...">
+    <div id="studyGroupsList">
+      <p>Your study groups will appear here.</p>
+    </div>
+  </div>
+</section>
+
         <p>Made for students, with 💜</p>
         <p>Student Hub © <span id="currentYear"></span></p>
       </footer>
