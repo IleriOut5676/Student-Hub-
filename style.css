@@ -1015,3 +1015,64 @@ p {
   }
 }
 
+/* =========================================
+   SETTINGS AND DARK MODE
+   ========================================= */
+
+body.dark-mode {
+  --white: #211d2b;
+  --background: #17141f;
+  --text: #f4efff;
+  --muted: #c0b7d0;
+  --border: #3a3249;
+  --lavender: #302640;
+  --primary-light: #3c2e55;
+  --green: #244331;
+  --pink: #482b40;
+  --blue: #243b55;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+}
+
+body.dark-mode label {
+  color: #e4dbf5;
+}
+
+body.dark-mode .hero {
+  background: linear-gradient(115deg, #302640, #282034 60%, #39243b);
+  border-color: var(--border);
+}
+
+body.dark-mode .hero h2 {
+  color: #f4efff;
+}
+
+body.dark-mode .nav-link {
+  color: #d0c6e2;
+}
+
+body.dark-mode .nav-link:hover,
+body.dark-mode .nav-link.active {
+  background: var(--primary-light);
+  color: #e7d9ff;
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+  color: var(--text);
+  background: #292334;
+  border-color: var(--border);
+}
+
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
+  color: #aaa0bd;
+}
+
+/* Keep reminder checkboxes compact */
+#settings input[type="checkbox"] {
+  width: auto;
+  margin-right: 8px;
+  accent-color: var(--primary);
+}
+
