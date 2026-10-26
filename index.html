@@ -493,6 +493,97 @@
     </div>
   </div>
 </section>
+
+      
+<!-- Settings -->
+<section class="page-section" id="settings" hidden>
+  <div class="section-heading">
+    <div>
+      <h2>Settings</h2>
+      <p>Make Student Hub feel like your own space. 💜</p>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3>👤 Student Profile</h3>
+    <p>Personalise your student details.</p>
+
+    <form id="profileForm">
+      <div class="form-group">
+        <label for="studentName">Your name</label>
+        <input id="studentName" type="text" placeholder="Enter your name">
+      </div>
+
+      <div class="form-group">
+        <label for="studentCourse">Course or qualification</label>
+        <input id="studentCourse" type="text" placeholder="e.g. Information Technology">
+      </div>
+
+      <div class="form-group">
+        <label for="studentYear">Study year</label>
+        <select id="studentYear">
+          <option value="">Select your study year</option>
+          <option value="1">Year 1</option>
+          <option value="2">Year 2</option>
+          <option value="3">Year 3</option>
+          <option value="4">Year 4</option>
+          <option value="5+">Year 5 or above</option>
+          <option value="Postgraduate">Postgraduate</option>
+        </select>
+      </div>
+
+      <button type="submit" class="primary-button">Save Profile</button>
+      <p id="profileMessage" class="form-message" aria-live="polite"></p>
+    </form>
+  </div>
+
+  <div class="panel">
+    <h3>🎨 Appearance</h3>
+    <p>Choose the look that feels best for you.</p>
+
+    <div class="form-group">
+      <label for="themeSelect">Display theme</label>
+      <select id="themeSelect">
+        <option value="light">☀️ Light mode</option>
+        <option value="dark">🌙 Dark mode</option>
+      </select>
+    </div>
+    <p>Your theme choice will be saved on this browser.</p>
+  </div>
+
+  <div class="panel">
+    <h3>🔔 Study Reminders</h3>
+    <p>Choose which reminders you want to enable.</p>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="assignmentNotifications">
+        Assignment reminders
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="studyNotifications">
+        Study session reminders
+      </label>
+    </div>
+
+    <div class="form-group">
+      <label>
+        <input type="checkbox" id="progressNotifications">
+        Progress and goal reminders
+      </label>
+    </div>
+
+    <button type="button" class="primary-button" id="saveNotifications">
+      Save Reminder Preferences
+    </button>
+    <p id="notificationMessage" class="form-message" aria-live="polite"></p>
+    <p>These settings save your preferences; they do not send automatic alerts yet.</p>
+  </div>
+</section>
+
      
         <p>Made for students, with 💜</p>
         <p>Student Hub © <span id="currentYear"></span></p>
