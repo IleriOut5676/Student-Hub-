@@ -1316,7 +1316,9 @@ function initialiseStudentHub() {
   if (dailyFocusInput) {
     dailyFocusInput.value = String(dailyFocus || "");
   }
-
+   
+startReminderChecks();
+   
   showSection("dashboard");
 
   console.log("Student Hub initialised successfully.");
