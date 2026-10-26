@@ -1076,3 +1076,165 @@ body.dark-mode textarea::placeholder {
   accent-color: var(--primary);
 }
 
+
+/* =========================================
+   STUDENT HUB — RESPONSIVE IMPROVEMENTS
+   ========================================= */
+
+/* Prevent unwanted horizontal scrolling */
+html {
+  width: 100%;
+  overflow-x: clip;
+}
+
+body {
+  width: 100%;
+  min-width: 0;
+}
+
+.app-container,
+.main-content,
+.page-section,
+.panel,
+.hero {
+  min-width: 0;
+}
+
+.main-content {
+  width: auto;
+  overflow-wrap: anywhere;
+}
+
+/* Make navigation and buttons easier to tap */
+.nav-link {
+  min-height: 44px;
+}
+
+.primary-button,
+.item-actions button,
+.action-button {
+  min-height: 42px;
+}
+
+/* Allow headings and toolbar controls to wrap */
+.topbar,
+.section-heading,
+.panel-heading,
+.toolbar {
+  min-width: 0;
+}
+
+.topbar > *,
+.section-heading > *,
+.panel-heading > * {
+  min-width: 0;
+}
+
+.welcome h1,
+.section-heading h2,
+.panel-heading h2,
+.panel-heading h3 {
+  overflow-wrap: anywhere;
+}
+
+/* Tablet improvements */
+@media (max-width: 800px) {
+  .main-content {
+    width: 100%;
+    padding: 18px 16px;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+  }
+
+  .hero {
+    gap: 12px;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+
+  .item-actions {
+    max-width: 100%;
+  }
+}
+
+/* Phone improvements */
+@media (max-width: 520px) {
+  .main-content {
+    padding: 14px 12px;
+  }
+
+  .topbar {
+    gap: 8px;
+  }
+
+  .menu-toggle {
+    width: 44px;
+    height: 44px;
+  }
+
+  .hero {
+    padding: 22px 17px;
+  }
+
+  .hero .primary-button,
+  .form-grid .primary-button,
+  #noteForm .primary-button {
+    width: 100%;
+  }
+
+  .panel {
+    padding: 15px;
+    border-radius: 14px;
+  }
+
+  .stat-card {
+    overflow-wrap: anywhere;
+  }
+
+  .item-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .item-actions button,
+  .action-button {
+    max-width: 100%;
+    overflow-wrap: anywhere;
+  }
+
+  input,
+  select,
+  textarea {
+    max-width: 100%;
+    font-size: 16px;
+  }
+
+  .footer {
+    overflow-wrap: anywhere;
+  }
+}
+
+/* Very narrow phones */
+@media (max-width: 360px) {
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-content {
+    padding: 12px 10px;
+  }
+
+  .welcome h1 {
+    font-size: 19px;
+  }
+
+  .hero h2 {
+    font-size: 23px;
+  }
+}
+
+
