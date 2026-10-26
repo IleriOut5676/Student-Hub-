@@ -1087,12 +1087,16 @@ if (saveNotificationsButton) {
 }
 
 
+
 function initialiseStudentHub() {
   const yearElement = $("#currentYear");
 
   if (yearElement) {
     yearElement.textContent = new Date().getFullYear();
   }
+
+  // Load saved profile, theme and reminder preferences
+  loadSettings();
 
   const assignmentDate = $("#assignmentDueDate");
   const sessionDate = $("#sessionDate");
@@ -1124,4 +1128,3 @@ if (document.readyState === "loading") {
 } else {
   initialiseStudentHub();
 }
-
