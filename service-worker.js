@@ -1,5 +1,5 @@
 
-const CACHE_NAME = "student-hub-shell-v2";
+const CACHE_NAME = "student-hub-shell-v3";
 
 const APP_FILES = [
   "./index.html",
@@ -9,17 +9,16 @@ const APP_FILES = [
   "./icon.svg"
 ];
 
-// Install: save the core app files for offline use.
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(async (cache) => {
+    (async () => {
+      const cache = await caches.open(CACHE_NAME);
       await cache.addAll(APP_FILES);
       await self.skipWaiting();
-    })
+    })()
   );
 });
 
-// Activate: remove older Student Hub shell caches.
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
@@ -40,11 +39,9 @@ self.addEventListener("activate", (event) => {
   );
 });
 
-// Fetch: serve saved app files when possible.
 self.addEventListener("fetch", (event) => {
   const request = event.request;
 
-  // Only handle normal GET requests from this website.
   if (
     request.method !== "GET" ||
     new URL(request.url).origin !== self.location.origin
@@ -52,19 +49,18 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // For page navigation, use the saved app page if offline.
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request).catch(async () => {
-        const cachedPage = await caches.match("./index.html");
-        return cachedPage || Response.error();
+        return (
+          (await caches.match("./index.html")) ||
+          Response.error()
+        );
       })
     );
     return;
   }
 
-  // For app resources, prefer the saved copy and use the
-  // network when a resource has not been cached yet.
   event.respondWith(
     caches.match(request).then((cachedResponse) => {
       return cachedResponse || fetch(request);
