@@ -7,7 +7,7 @@ import {
   sendEmailVerification
 } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
 
-const auth = window.studentHubFirebase?.auth;
+import { auth } from "./firebase.js";
 
 if (!auth) {
   console.error("Firebase Authentication is not available.");
