@@ -12,9 +12,9 @@ const firebaseConfig = {
   appId: "1:955278354069:web:ab09932b0629683154dd9c"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+export const app = initializeApp(firebaseConfig);
+export const auth = getAuth(app);
+export const db = getFirestore(app);
 
 // Make Firebase available to the existing app without
 // rewriting script.js.
