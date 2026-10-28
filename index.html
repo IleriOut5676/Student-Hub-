@@ -20,7 +20,62 @@
 </head>
 
 <body>
-  <div class="app-container">
+  
+<body>
+
+  <!-- LOGIN AND REGISTRATION SCREEN -->
+  <section id="student-account" class="auth-screen">
+    <div class="auth-card">
+      <div class="brand-icon">S</div>
+
+      <p class="eyebrow">YOUR ACADEMIC SPACE</p>
+      <h1>Welcome to Student Hub 💜</h1>
+      <p>One space for your studies, goals and academic success.</p>
+
+      <p id="auth-account-name" hidden></p>
+      <p id="auth-status" class="form-message" role="status"
+         aria-live="polite"></p>
+
+      <form id="auth-form">
+        <div class="form-group" id="auth-name-group">
+          <label for="auth-name">Full name</label>
+          <input id="auth-name" type="text"
+                 autocomplete="name" placeholder="Your full name"
+                 required>
+        </div>
+
+        <div class="form-group">
+          <label for="auth-email">Email address</label>
+          <input id="auth-email" type="email"
+                 autocomplete="email" placeholder="you@example.com"
+                 required>
+        </div>
+
+        <div class="form-group">
+          <label for="auth-password">Password</label>
+          <input id="auth-password" type="password"
+                 autocomplete="new-password" minlength="6"
+                 placeholder="At least 6 characters" required>
+        </div>
+
+        <div class="form-group" id="auth-confirm-group">
+          <label for="auth-confirm-password">Confirm password</label>
+          <input id="auth-confirm-password" type="password"
+                 autocomplete="new-password" minlength="6"
+                 placeholder="Enter your password again" required>
+        </div>
+
+        <button id="auth-submit" class="primary-button"
+                type="submit">Create account</button>
+
+        <button id="auth-toggle" class="text-button"
+                type="button">Already have an account? Sign in</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- DASHBOARD: HIDDEN UNTIL FIREBASE CONFIRMS SIGN-IN -->
+  <div class="app-container" id="app-container" hidden>
 
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
