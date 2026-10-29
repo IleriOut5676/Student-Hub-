@@ -1237,4 +1237,10 @@ body {
   }
 }
 
+.page-section[hidden] {
+  display: none !important;
+}
 
+[hidden] {
+  display: none !important;
+}
