@@ -71,64 +71,75 @@ if (
     status.style.color = isError ? "#b91c1c" : "";
   }
 
-  // PASSWORD RESET
-  resetButton.addEventListener("click", async () => {
-    // Your password-reset code goes here.
-  });
-
   // -----------------------------------------
-  // PASSWORD RESET
-  // -----------------------------------------
+// PASSWORD RESET
+// -----------------------------------------
 
-    if (!email) {
-      showStatus(
-        "Please enter your email address first.",
-        true
-      );
+resetButton.addEventListener("click", async () => {
 
-      emailInput.focus();
-      return;
-    }
+  const email = emailInput.value.trim();
 
-    resetButton.disabled = true;
+  // Check whether the email field is empty
+  if (!email) {
+    showStatus(
+      "Please enter your email address first.",
+      true
+    );
 
-    showStatus("Sending your password-reset email...");
+    emailInput.focus();
+    return;
+  }
 
-    try {
-      await sendPasswordResetEmail(auth, email);
+  // Check whether the email address is valid
+  if (!emailInput.checkValidity()) {
+    showStatus(
+      "Please enter a valid email address.",
+      true
+    );
 
-      showStatus(
-        "If an account exists for this email, a password-reset link has been sent. Please check your inbox."
-      );
+    emailInput.focus();
+    return;
+  }
 
-    } catch (error) {
-      console.error("Password reset error:", error);
+  resetButton.disabled = true;
 
-      const messages = {
-        "auth/invalid-email":
-          "Please enter a valid email address.",
+  showStatus("Sending your password-reset email...");
 
-        "auth/user-not-found":
-          "No account was found for that email address.",
+  try {
+    await sendPasswordResetEmail(auth, email);
 
-        "auth/too-many-requests":
-          "Too many attempts. Please wait before trying again.",
+    showStatus(
+      "If an account exists for this email, a password-reset link has been sent. Please check your inbox."
+    );
 
-        "auth/network-request-failed":
-          "Network error. Please check your internet connection."
-      };
+  } catch (error) {
+    console.error("Password reset error:", error);
 
-      showStatus(
-        messages[error.code] ||
-          "We couldn't send the reset email. Please try again.",
-        true
-      );
+    const messages = {
+      "auth/invalid-email":
+        "Please enter a valid email address.",
 
-    } finally {
-      resetButton.disabled = false;
-    }
-  });
+      "auth/user-not-found":
+        "No account was found for that email address.",
 
+      "auth/too-many-requests":
+        "Too many attempts. Please wait before trying again.",
+
+      "auth/network-request-failed":
+        "Network error. Please check your internet connection."
+    };
+
+    showStatus(
+      messages[error.code] ||
+        "We couldn't send the reset email. Please try again.",
+      true
+    );
+
+  } finally {
+    resetButton.disabled = false;
+  }
+
+});
   // -----------------------------------------
   // REGISTRATION / SIGN-IN MODE
   // -----------------------------------------
