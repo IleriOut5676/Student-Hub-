@@ -80,9 +80,6 @@ if (
   // PASSWORD RESET
   // -----------------------------------------
 
-  resetButton.addEventListener("click", async () => {
-    const email = emailInput.value.trim();
-
     if (!email) {
       showStatus(
         "Please enter your email address first.",
