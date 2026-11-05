@@ -105,7 +105,8 @@ if (themeSelect) {
 // -----------------------------------------
 // Notification preferences
 // -----------------------------------------
-
+const profileForm = $("#profileForm");
+const themeSelect = $("#themeSelect");
 if (saveNotificationsButton) {
   saveNotificationsButton.addEventListener("click", () => {
     const preferences = {
