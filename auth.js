@@ -139,6 +139,7 @@ if (
 
     nameGroup.hidden = !isRegistering;
     confirmGroup.hidden = !isRegistering;
+    resetButton.hidden = isRegistering;
 
     // Show password reset only during sign-in.
     resetButton.hidden = isRegistering;
