@@ -1240,3 +1240,26 @@ body {
 [hidden] {
   display: none !important;
 }
+.auth-reset-button {
+  display: block;
+  margin: 8px 0 16px auto;
+  padding: 6px 0;
+  border: none;
+  background: transparent;
+  color: #8b5cf6;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-reset-button:hover {
+  text-decoration: underline;
+}
+
+.auth-reset-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.auth-reset-button[hidden] {
+  display: none;
+}
