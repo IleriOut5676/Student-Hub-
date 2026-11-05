@@ -27,6 +27,7 @@ const confirmGroup = document.getElementById("auth-confirm-group");
 const submitButton = document.getElementById("auth-submit");
 const toggleButton = document.getElementById("auth-toggle");
 const signOutButton = document.getElementById("auth-signout");
+const resetButton = document.getElementById("auth-reset");
 
 const accountName = document.getElementById("auth-account-name");
 const welcomeName = document.getElementById("welcomeName");
