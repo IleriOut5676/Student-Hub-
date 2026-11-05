@@ -226,16 +226,23 @@ if (
           : "";
       }
 
-      if (welcomeName) {
-        welcomeName.textContent = signedIn
-          ? (
-              user.displayName ||
-              user.email?.split("@")[0] ||
-              "Student"
-            )
-          : "Student";
-      }
+    const studentName = signedIn
+  ? (
+      user.displayName ||
+      user.email?.split("@")[0] ||
+      "Student"
+    )
+  : "Student";
 
+if (welcomeName) {
+  welcomeName.textContent = studentName;
+}
+
+if (welcomeGreeting) {
+  welcomeGreeting.textContent = signedIn
+    ? `WELCOME, ${studentName.toUpperCase()}!`
+    : "WELCOME TO YOUR HUB";
+}
       if (!signedIn) {
         setAuthMode(true);
       } else {
