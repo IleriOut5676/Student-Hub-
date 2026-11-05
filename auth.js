@@ -29,6 +29,7 @@ const signOutButton = document.getElementById("auth-signout");
 
 const accountName = document.getElementById("auth-account-name");
 const welcomeName = document.getElementById("welcomeName");
+const welcomeGreeting = document.getElementById("welcomeGreeting");
 
 if (
   !auth ||
