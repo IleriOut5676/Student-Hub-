@@ -3,6 +3,17 @@
    STUDENT HUB
    Interactive functionality
    ========================================= */
+import { auth, db } from "./firebase.js";
+
+import {
+  doc,
+  setDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-firestore.js";
+
+import {
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
 
 "use strict";
 
