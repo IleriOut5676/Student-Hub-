@@ -4,12 +4,16 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
- sendEmailVerification,
-sendPasswordResetEmail,
-updateProfile
+  sendEmailVerification,
+  sendPasswordResetEmail,
+  updateProfile
 } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
 
 import { auth } from "./firebase.js";
+
+// -----------------------------------------
+// HTML ELEMENTS
+// -----------------------------------------
 
 const accountScreen = document.getElementById("student-account");
 const appContainer = document.getElementById("app-container");
@@ -33,6 +37,10 @@ const accountName = document.getElementById("auth-account-name");
 const welcomeName = document.getElementById("welcomeName");
 const welcomeGreeting = document.getElementById("welcomeGreeting");
 
+// -----------------------------------------
+// CHECK REQUIRED ELEMENTS
+// -----------------------------------------
+
 if (
   !auth ||
   !accountScreen ||
@@ -47,24 +55,94 @@ if (
   !confirmGroup ||
   !submitButton ||
   !toggleButton ||
-  !signOutButton
+  !signOutButton ||
+  !resetButton
 ) {
   console.error(
     "Student Hub authentication could not start. Check the Firebase setup and HTML element IDs."
   );
+
 } else {
+
   let isRegistering = true;
+
+  // -----------------------------------------
+  // STATUS MESSAGE
+  // -----------------------------------------
 
   function showStatus(message, isError = false) {
     status.textContent = message;
     status.style.color = isError ? "#b91c1c" : "";
   }
 
+  // -----------------------------------------
+  // PASSWORD RESET
+  // -----------------------------------------
+
+  resetButton.addEventListener("click", async () => {
+    const email = emailInput.value.trim();
+
+    if (!email) {
+      showStatus(
+        "Please enter your email address first.",
+        true
+      );
+
+      emailInput.focus();
+      return;
+    }
+
+    resetButton.disabled = true;
+
+    showStatus("Sending your password-reset email...");
+
+    try {
+      await sendPasswordResetEmail(auth, email);
+
+      showStatus(
+        "If an account exists for this email, a password-reset link has been sent. Please check your inbox."
+      );
+
+    } catch (error) {
+      console.error("Password reset error:", error);
+
+      const messages = {
+        "auth/invalid-email":
+          "Please enter a valid email address.",
+
+        "auth/user-not-found":
+          "No account was found for that email address.",
+
+        "auth/too-many-requests":
+          "Too many attempts. Please wait before trying again.",
+
+        "auth/network-request-failed":
+          "Network error. Please check your internet connection."
+      };
+
+      showStatus(
+        messages[error.code] ||
+          "We couldn't send the reset email. Please try again.",
+        true
+      );
+
+    } finally {
+      resetButton.disabled = false;
+    }
+  });
+
+  // -----------------------------------------
+  // REGISTRATION / SIGN-IN MODE
+  // -----------------------------------------
+
   function setAuthMode(registering) {
     isRegistering = registering;
 
     nameGroup.hidden = !isRegistering;
     confirmGroup.hidden = !isRegistering;
+
+    // Show password reset only during sign-in.
+    resetButton.hidden = isRegistering;
 
     nameInput.required = isRegistering;
     confirmInput.required = isRegistering;
@@ -84,12 +162,21 @@ if (
       : "Need an account? Register";
 
     form.reset();
+
     showStatus("");
   }
+
+  // -----------------------------------------
+  // TOGGLE AUTHENTICATION MODE
+  // -----------------------------------------
 
   toggleButton.addEventListener("click", () => {
     setAuthMode(!isRegistering);
   });
+
+  // -----------------------------------------
+  // REGISTRATION AND SIGN-IN
+  // -----------------------------------------
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -123,22 +210,29 @@ if (
 
     submitButton.disabled = true;
     toggleButton.disabled = true;
+
     showStatus(
-      isRegistering ? "Creating your account..." : "Signing you in..."
+      isRegistering
+        ? "Creating your account..."
+        : "Signing you in..."
     );
 
     try {
+
       if (isRegistering) {
-        const credential = await createUserWithEmailAndPassword(
-          auth,
-          email,
-          password
-        );
+
+        const credential =
+          await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
 
         try {
           await updateProfile(credential.user, {
             displayName: fullName
           });
+
         } catch (profileError) {
           console.error(
             "Could not save the profile name:",
@@ -148,9 +242,11 @@ if (
 
         try {
           await sendEmailVerification(credential.user);
+
           showStatus(
             "Your account has been created. A verification email has been sent."
           );
+
         } catch (verificationError) {
           console.error(
             "Verification email could not be sent:",
@@ -161,28 +257,44 @@ if (
             "Your account was created, but the verification email could not be sent."
           );
         }
+
       } else {
-        await signInWithEmailAndPassword(auth, email, password);
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
         showStatus("Signed in successfully!");
       }
+
     } catch (error) {
+
       console.error("Authentication error:", error);
 
       const messages = {
         "auth/email-already-in-use":
           "This email already has an account. Please sign in.",
+
         "auth/invalid-email":
           "Please enter a valid email address.",
+
         "auth/weak-password":
           "Choose a stronger password.",
+
         "auth/invalid-credential":
           "Your email or password is incorrect. Please try again.",
+
         "auth/user-not-found":
           "No account was found for this email. Please register first.",
+
         "auth/wrong-password":
           "Your password is incorrect. Please try again.",
+
         "auth/too-many-requests":
           "Too many attempts. Please wait before trying again.",
+
         "auth/network-request-failed":
           "Network error. Please check your internet connection."
       };
@@ -193,27 +305,43 @@ if (
           "Something went wrong. Please try again.",
         true
       );
+
     } finally {
       submitButton.disabled = false;
       toggleButton.disabled = false;
     }
   });
 
+  // -----------------------------------------
+  // SIGN OUT
+  // -----------------------------------------
+
   signOutButton.addEventListener("click", async () => {
     signOutButton.disabled = true;
 
     try {
       await signOut(auth);
+
     } catch (error) {
       console.error("Sign-out error:", error);
-      showStatus("Could not sign out. Please try again.", true);
+
+      showStatus(
+        "Could not sign out. Please try again.",
+        true
+      );
+
     } finally {
       signOutButton.disabled = false;
     }
   });
 
+  // -----------------------------------------
+  // FIREBASE AUTHENTICATION STATE
+  // -----------------------------------------
+
   onAuthStateChanged(
     auth,
+
     (user) => {
       const signedIn = Boolean(user);
 
@@ -223,38 +351,46 @@ if (
 
       if (accountName) {
         accountName.hidden = !signedIn;
+
         accountName.textContent = signedIn
           ? `Signed in as ${user.email || "Student"}`
           : "";
       }
 
-    const studentName = signedIn
-  ? (
-      user.displayName ||
-      user.email?.split("@")[0] ||
-      "Student"
-    )
-  : "Student";
+      const studentName = signedIn
+        ? (
+            user.displayName ||
+            user.email?.split("@")[0] ||
+            "Student"
+          )
+        : "Student";
 
-if (welcomeName) {
-  welcomeName.textContent = studentName;
-}
+      if (welcomeName) {
+        welcomeName.textContent = studentName;
+      }
 
-if (welcomeGreeting) {
-  welcomeGreeting.textContent = signedIn
-    ? `WELCOME, ${studentName.toUpperCase()}!`
-    : "WELCOME TO YOUR HUB";
-}
+      if (welcomeGreeting) {
+        welcomeGreeting.textContent = signedIn
+          ? `WELCOME, ${studentName.toUpperCase()}!`
+          : "WELCOME TO YOUR HUB";
+      }
+
       if (!signedIn) {
         setAuthMode(true);
+
       } else {
         nameInput.value = "";
         passwordInput.value = "";
         confirmInput.value = "";
       }
     },
+
     (error) => {
-      console.error("Authentication state error:", error);
+      console.error(
+        "Authentication state error:",
+        error
+      );
+
       showStatus(
         "We could not check your sign-in status. Please refresh the page.",
         true
