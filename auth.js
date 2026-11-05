@@ -65,14 +65,16 @@ if (
 
   let isRegistering = true;
 
-  // -----------------------------------------
   // STATUS MESSAGE
-  // -----------------------------------------
-
   function showStatus(message, isError = false) {
     status.textContent = message;
     status.style.color = isError ? "#b91c1c" : "";
   }
+
+  // PASSWORD RESET
+  resetButton.addEventListener("click", async () => {
+    // Your password-reset code goes here.
+  });
 
   // -----------------------------------------
   // PASSWORD RESET
