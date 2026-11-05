@@ -8,11 +8,12 @@ import {
   sendPasswordResetEmail,
   updateProfile
 } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
+
 import { auth } from "./firebase.js";
 
-// -----------------------------------------
+// =========================================
 // HTML ELEMENTS
-// -----------------------------------------
+// =========================================
 
 const accountScreen = document.getElementById("student-account");
 const appContainer = document.getElementById("app-container");
@@ -36,9 +37,9 @@ const accountName = document.getElementById("auth-account-name");
 const welcomeName = document.getElementById("welcomeName");
 const welcomeGreeting = document.getElementById("welcomeGreeting");
 
-// -----------------------------------------
+// =========================================
 // CHECK REQUIRED ELEMENTS
-// -----------------------------------------
+// =========================================
 
 if (
   !auth ||
@@ -58,100 +59,112 @@ if (
   !resetButton
 ) {
   console.error(
-    "Student Hub authentication could not start. Check the Firebase setup and HTML element IDs."
+    "Student Hub authentication could not start. Check Firebase setup and HTML element IDs."
   );
 
 } else {
 
   let isRegistering = true;
 
+  // =========================================
   // STATUS MESSAGE
+  // =========================================
+
   function showStatus(message, isError = false) {
     status.textContent = message;
     status.style.color = isError ? "#b91c1c" : "";
   }
 
-  // -----------------------------------------
-// PASSWORD RESET
-// -----------------------------------------
+  // =========================================
+  // PASSWORD RESET
+  // =========================================
 
-resetButton.addEventListener("click", async () => {
+  async function handlePasswordReset() {
 
-  const email = emailInput.value.trim();
+    const email = emailInput.value.trim();
 
-  // Check whether the email field is empty
-  if (!email) {
-    showStatus(
-      "Please enter your email address first.",
-      true
-    );
+    if (!email) {
+      showStatus(
+        "Please enter your email address first.",
+        true
+      );
 
-    emailInput.focus();
-    return;
-  }
+      emailInput.focus();
+      return;
+    }
 
-  // Check whether the email address is valid
-  if (!emailInput.checkValidity()) {
-    showStatus(
-      "Please enter a valid email address.",
-      true
-    );
-
-    emailInput.focus();
-    return;
-  }
-
-  resetButton.disabled = true;
-
-  showStatus("Sending your password-reset email...");
-
-  try {
-    await sendPasswordResetEmail(auth, email);
-
-    showStatus(
-      "If an account exists for this email, a password-reset link has been sent. Please check your inbox."
-    );
-
-  } catch (error) {
-    console.error("Password reset error:", error);
-
-    const messages = {
-      "auth/invalid-email":
+    if (!emailInput.checkValidity()) {
+      showStatus(
         "Please enter a valid email address.",
+        true
+      );
 
-      "auth/user-not-found":
-        "No account was found for that email address.",
+      emailInput.focus();
+      return;
+    }
 
-      "auth/too-many-requests":
-        "Too many attempts. Please wait before trying again.",
+    resetButton.disabled = true;
 
-      "auth/network-request-failed":
-        "Network error. Please check your internet connection."
-    };
+    showStatus("Sending your password-reset email...");
 
-    showStatus(
-      messages[error.code] ||
-        "We couldn't send the reset email. Please try again.",
-      true
-    );
+    try {
 
-  } finally {
-    resetButton.disabled = false;
+      await sendPasswordResetEmail(auth, email);
+
+      showStatus(
+        "If an account exists for this email, a password-reset link has been sent. Please check your inbox."
+      );
+
+    } catch (error) {
+
+      console.error("Password reset error:", error);
+
+      const messages = {
+        "auth/invalid-email":
+          "Please enter a valid email address.",
+
+        "auth/user-not-found":
+          "No account was found for that email address.",
+
+        "auth/too-many-requests":
+          "Too many attempts. Please wait before trying again.",
+
+        "auth/network-request-failed":
+          "Network error. Please check your internet connection."
+      };
+
+      showStatus(
+        messages[error.code] ||
+          "We couldn't send the reset email. Please try again.",
+        true
+      );
+
+    } finally {
+
+      resetButton.disabled = false;
+
+    }
   }
 
-});
-  // -----------------------------------------
+  resetButton.addEventListener(
+    "click",
+    handlePasswordReset
+  );
+
+  // =========================================
   // REGISTRATION / SIGN-IN MODE
-  // -----------------------------------------
+  // =========================================
 
   function setAuthMode(registering) {
+
     isRegistering = registering;
 
-   nameGroup.hidden = !isRegistering;
-confirmGroup.hidden = !isRegistering;
+    nameGroup.hidden = !isRegistering;
+    confirmGroup.hidden = !isRegistering;
 
-// Show password reset only during sign-in.
-resetButton.hidden = isRegistering;
+    // Password reset is available only during sign-in.
+    resetButton.hidden = isRegistering;
+
     nameInput.required = isRegistering;
     confirmInput.required = isRegistering;
 
@@ -174,37 +187,46 @@ resetButton.hidden = isRegistering;
     showStatus("");
   }
 
-  // -----------------------------------------
+  // =========================================
   // TOGGLE AUTHENTICATION MODE
-  // -----------------------------------------
+  // =========================================
 
   toggleButton.addEventListener("click", () => {
+
     setAuthMode(!isRegistering);
+
   });
 
-  // -----------------------------------------
+  // =========================================
   // REGISTRATION AND SIGN-IN
-  // -----------------------------------------
+  // =========================================
 
   form.addEventListener("submit", async (event) => {
+
     event.preventDefault();
 
-    if (submitButton.disabled) return;
+    if (submitButton.disabled) {
+      return;
+    }
 
     const email = emailInput.value.trim();
     const password = passwordInput.value;
     const fullName = nameInput.value.trim();
 
     if (isRegistering && !fullName) {
+
       showStatus("Please enter your full name.", true);
       return;
+
     }
 
     if (password.length < 6) {
+
       showStatus(
         "Your password must contain at least 6 characters.",
         true
       );
+
       return;
     }
 
@@ -212,8 +234,10 @@ resetButton.hidden = isRegistering;
       isRegistering &&
       password !== confirmInput.value
     ) {
+
       showStatus("Your passwords do not match.", true);
       return;
+
     }
 
     submitButton.disabled = true;
@@ -237,18 +261,22 @@ resetButton.hidden = isRegistering;
           );
 
         try {
+
           await updateProfile(credential.user, {
             displayName: fullName
           });
 
         } catch (profileError) {
+
           console.error(
             "Could not save the profile name:",
             profileError
           );
+
         }
 
         try {
+
           await sendEmailVerification(credential.user);
 
           showStatus(
@@ -256,6 +284,7 @@ resetButton.hidden = isRegistering;
           );
 
         } catch (verificationError) {
+
           console.error(
             "Verification email could not be sent:",
             verificationError
@@ -264,6 +293,7 @@ resetButton.hidden = isRegistering;
           showStatus(
             "Your account was created, but the verification email could not be sent."
           );
+
         }
 
       } else {
@@ -275,6 +305,7 @@ resetButton.hidden = isRegistering;
         );
 
         showStatus("Signed in successfully!");
+
       }
 
     } catch (error) {
@@ -315,22 +346,28 @@ resetButton.hidden = isRegistering;
       );
 
     } finally {
+
       submitButton.disabled = false;
       toggleButton.disabled = false;
+
     }
+
   });
 
-  // -----------------------------------------
+  // =========================================
   // SIGN OUT
-  // -----------------------------------------
+  // =========================================
 
   signOutButton.addEventListener("click", async () => {
+
     signOutButton.disabled = true;
 
     try {
+
       await signOut(auth);
 
     } catch (error) {
+
       console.error("Sign-out error:", error);
 
       showStatus(
@@ -339,18 +376,22 @@ resetButton.hidden = isRegistering;
       );
 
     } finally {
+
       signOutButton.disabled = false;
+
     }
+
   });
 
-  // -----------------------------------------
+  // =========================================
   // FIREBASE AUTHENTICATION STATE
-  // -----------------------------------------
+  // =========================================
 
   onAuthStateChanged(
     auth,
 
     (user) => {
+
       const signedIn = Boolean(user);
 
       accountScreen.hidden = signedIn;
@@ -358,11 +399,13 @@ resetButton.hidden = isRegistering;
       signOutButton.hidden = !signedIn;
 
       if (accountName) {
+
         accountName.hidden = !signedIn;
 
         accountName.textContent = signedIn
           ? `Signed in as ${user.email || "Student"}`
           : "";
+
       }
 
       const studentName = signedIn
@@ -378,22 +421,30 @@ resetButton.hidden = isRegistering;
       }
 
       if (welcomeGreeting) {
+
         welcomeGreeting.textContent = signedIn
           ? `WELCOME, ${studentName.toUpperCase()}!`
           : "WELCOME TO YOUR HUB";
+
       }
 
       if (!signedIn) {
+
         setAuthMode(true);
 
       } else {
+
         nameInput.value = "";
+        emailInput.value = "";
         passwordInput.value = "";
         confirmInput.value = "";
+
       }
+
     },
 
     (error) => {
+
       console.error(
         "Authentication state error:",
         error
@@ -403,6 +454,8 @@ resetButton.hidden = isRegistering;
         "We could not check your sign-in status. Please refresh the page.",
         true
       );
+
     }
   );
+
 }
