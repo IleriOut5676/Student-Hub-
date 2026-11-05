@@ -136,13 +136,11 @@ if (
   function setAuthMode(registering) {
     isRegistering = registering;
 
-    nameGroup.hidden = !isRegistering;
-    confirmGroup.hidden = !isRegistering;
-    resetButton.hidden = isRegistering;
+   nameGroup.hidden = !isRegistering;
+confirmGroup.hidden = !isRegistering;
 
-    // Show password reset only during sign-in.
-    resetButton.hidden = isRegistering;
-
+// Show password reset only during sign-in.
+resetButton.hidden = isRegistering;
     nameInput.required = isRegistering;
     confirmInput.required = isRegistering;
 
