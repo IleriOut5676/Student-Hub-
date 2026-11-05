@@ -1,3 +1,7 @@
+// -----------------------------------------
+// Profile settings
+// -----------------------------------------
+
 if (profileForm) {
   profileForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -8,17 +12,19 @@ if (profileForm) {
       year: $("#studentYear").value
     };
 
-    // Validate the student's name.
+    const profileMessage = $("#profileMessage");
+
     if (!profile.name) {
-      $("#profileMessage").textContent =
-        "Please enter your name.";
+      if (profileMessage) {
+        profileMessage.textContent = "Please enter your name.";
+      }
       return;
     }
 
-    // Save the profile locally first.
+    // Save locally first.
     if (!saveData(PROFILE_KEY, profile)) return;
 
-    // Update the sidebar profile information.
+    // Update the sidebar.
     const profileName = $(".profile strong");
     const profileDescription = $(".profile p");
 
@@ -35,18 +41,18 @@ if (profileForm) {
     const user = auth.currentUser;
 
     if (!user) {
-      $("#profileMessage").textContent =
-        "Profile saved locally. Please sign in to synchronise it.";
+      if (profileMessage) {
+        profileMessage.textContent =
+          "Profile saved locally. Please sign in to synchronise it.";
+      }
       return;
     }
 
     try {
-      // Update Firebase Authentication display name.
       await updateProfile(user, {
         displayName: profile.name
       });
 
-      // Save the student profile to Firestore.
       await setDoc(
         doc(db, "students", user.uid),
         {
@@ -56,16 +62,10 @@ if (profileForm) {
         { merge: true }
       );
 
-      // Update the dashboard greeting.
-      const firstName = profile.name
-        .trim()
-        .split(/\s+/)[0];
+      const firstName = profile.name.trim().split(/\s+/)[0];
 
-      const welcomeName =
-        document.getElementById("welcomeName");
-
-      const welcomeGreeting =
-        document.getElementById("welcomeGreeting");
+      const welcomeName = $("#welcomeName");
+      const welcomeGreeting = $("#welcomeGreeting");
 
       if (welcomeName) {
         welcomeName.textContent = firstName;
@@ -76,18 +76,167 @@ if (profileForm) {
           `WELCOME, ${firstName.toUpperCase()}!`;
       }
 
-      // Display the successful synchronisation message.
-      $("#profileMessage").textContent =
-        "Profile saved and synchronised successfully! 💜";
+      if (profileMessage) {
+        profileMessage.textContent =
+          "Profile saved and synchronised successfully! 💜";
+      }
 
     } catch (error) {
-      console.error(
-        "Profile synchronisation error:",
-        error
-      );
+      console.error("Profile synchronisation error:", error);
 
-      $("#profileMessage").textContent =
-        "Your profile was saved on this device, but cloud synchronisation failed. Please try again.";
+      if (profileMessage) {
+        profileMessage.textContent =
+          "Your profile was saved on this device, but cloud synchronisation failed. Please try again.";
+      }
     }
   });
+}
+
+// -----------------------------------------
+// Theme settings
+// -----------------------------------------
+
+if (themeSelect) {
+  themeSelect.addEventListener("change", () => {
+    applyTheme(themeSelect.value);
+  });
+}
+
+// -----------------------------------------
+// Notification preferences
+// -----------------------------------------
+
+if (saveNotificationsButton) {
+  saveNotificationsButton.addEventListener("click", () => {
+    const preferences = {
+      assignments: $("#assignmentNotifications").checked,
+      studySessions: $("#studyNotifications").checked,
+      progress: $("#progressNotifications").checked
+    };
+
+    if (!saveData(NOTIFICATIONS_KEY, preferences)) return;
+
+    const message = $("#notificationMessage");
+
+    if (message) {
+      message.textContent = "Reminder preferences saved! 💜";
+    }
+  });
+}
+
+// -----------------------------------------
+// Browser notifications
+// -----------------------------------------
+
+const enableNotificationsButton = $("#enableNotifications");
+const testNotificationButton = $("#testNotification");
+
+if (enableNotificationsButton) {
+  enableNotificationsButton.addEventListener("click", async () => {
+    if (!("Notification" in window)) {
+      alert("Your browser does not support notifications.");
+      return;
+    }
+
+    try {
+      const permission = await Notification.requestPermission();
+
+      if (permission === "granted") {
+        alert("Notifications enabled successfully! 💜");
+      } else if (permission === "denied") {
+        alert(
+          "Notifications are blocked. Please allow them in your browser settings."
+        );
+      } else {
+        alert("Notification permission was not granted yet.");
+      }
+
+    } catch (error) {
+      console.error("Could not enable notifications:", error);
+      alert("We couldn't enable notifications. Please try again.");
+    }
+  });
+}
+
+if (testNotificationButton) {
+  testNotificationButton.addEventListener("click", () => {
+    if (!("Notification" in window)) {
+      alert("Your browser does not support notifications.");
+      return;
+    }
+
+    if (Notification.permission !== "granted") {
+      alert("Please click Enable Browser Notifications first. 💜");
+      return;
+    }
+
+    try {
+      new Notification("Student Hub 🔔", {
+        body: "It's working! Your study journey is getting smarter. 💜"
+      });
+
+    } catch (error) {
+      console.error("Could not send test notification:", error);
+      alert("The test notification could not be displayed.");
+    }
+  });
+}
+
+// -----------------------------------------
+// Application initialisation
+// -----------------------------------------
+
+function initialiseStudentHub() {
+  const yearElement = $("#currentYear");
+
+  if (yearElement) {
+    yearElement.textContent = new Date().getFullYear();
+  }
+
+  // Load saved settings.
+  loadSettings();
+
+  // Set minimum dates.
+  const assignmentDate = $("#assignmentDueDate");
+  const sessionDate = $("#sessionDate");
+
+  if (assignmentDate) {
+    assignmentDate.min = todayString();
+  }
+
+  if (sessionDate) {
+    sessionDate.min = todayString();
+  }
+
+  // Render application data.
+  renderAssignments();
+  renderDashboard();
+  renderSessions();
+  renderNotes();
+  renderStudyGroups();
+  renderProgress();
+
+  // Restore daily focus.
+  if (dailyFocusInput) {
+    dailyFocusInput.value = String(dailyFocus || "");
+  }
+
+  // Start scheduled reminders.
+  startReminderChecks();
+
+  // Open the dashboard.
+  showSection("dashboard");
+
+  console.log("Student Hub initialised successfully.");
+}
+
+// Wait until the HTML is ready before initialising.
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    initialiseStudentHub,
+    { once: true }
+  );
+} else {
+  initialiseStudentHub();
 }
