@@ -4,8 +4,9 @@ import {
   signInWithEmailAndPassword,
   signOut,
   onAuthStateChanged,
-  sendEmailVerification,
-  updateProfile
+ sendEmailVerification,
+sendPasswordResetEmail,
+updateProfile
 } from "https://www.gstatic.com/firebasejs/13.1.0/firebase-auth.js";
 
 import { auth } from "./firebase.js";
